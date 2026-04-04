@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>Seoul Trip 2026</title>
+    <title>Seoul 2026 🌸</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -18,37 +18,38 @@
         .nav-bar { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border-radius: 32px 32px 0 0; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .map-btn { font-size: 10px; font-weight: bold; padding: 10px; border-radius: 12px; flex: 1; text-align: center; }
+        .tag-lift { background: #F0FDF4; color: #15803D; font-size: 10px; padding: 2px 8px; border-radius: 8px; font-weight: bold; }
     </style>
 </head>
 <body>
     <div id="app" class="max-w-md mx-auto min-h-screen pb-32">
         
-        <header class="px-6 pt-10 pb-4 sticky top-0 bg-[#F8F5F2]/90 backdrop-blur-md z-40">
+        <header class="px-6 pt-10 pb-4 sticky top-0 bg-[#F8F5F2]/90 backdrop-blur-md z-40 border-b border-stone-100/50">
             <div class="flex justify-between items-end mb-6">
                 <div>
-                    <p class="text-[10px] font-bold tracking-widest opacity-50 uppercase italic">Spring in Seoul</p>
-                    <h1 class="text-2xl font-kr-title font-bold mt-1">首爾櫻花行 🌸</h1>
+                    <p class="text-[10px] font-bold tracking-widest opacity-50 uppercase italic">Spring Trip</p>
+                    <h1 class="text-2xl font-kr-title font-bold mt-1">首爾賞櫻之旅 🌸</h1>
                 </div>
-                <div class="text-right text-[9px] opacity-40 font-bold">BR170 ✈ BR153</div>
+                <div class="text-right text-[9px] font-bold">BR170 ➔ BR153</div>
             </div>
             
             <div class="flex space-x-3 overflow-x-auto no-scrollbar pb-2">
                 <button v-for="(day, index) in itinerary" :key="index" @click="selectedDayIdx = index"
                     class="date-btn flex-shrink-0 py-3 text-center"
                     :class="selectedDayIdx === index ? 'date-btn-active' : 'text-stone-400'">
-                    <span class="text-[9px] block font-bold">DAY {{ index + 1 }}</span>
+                    <span class="text-[9px] block font-bold uppercase">Day {{ index + 1 }}</span>
                     <span class="text-xl font-bold block">{{ day.shortDate }}</span>
                 </button>
             </div>
         </header>
 
-        <main class="px-5 mt-4 space-y-6">
+        <main class="px-5 mt-6 space-y-6">
             
             <div v-if="currentTab === 'itinerary'" class="space-y-6">
                 <div v-for="(event, eIdx) in currentDayData.events" :key="eIdx" class="kr-card p-6">
                     <div class="flex justify-between items-start mb-3">
                         <span class="text-[10px] bg-stone-100 text-stone-500 px-2 py-1 rounded-md font-bold uppercase tracking-wider">{{ event.category }}</span>
-                        <span class="text-sm font-mono font-bold opacity-20">{{ event.time }}</span>
+                        <span class="text-sm font-mono font-bold opacity-30">{{ event.time }}</span>
                     </div>
                     <h3 class="text-lg font-bold text-stone-800 mb-2">{{ event.title }}</h3>
                     <p class="text-xs leading-relaxed text-stone-500 whitespace-pre-line mb-4">{{ event.desc }}</p>
@@ -57,16 +58,16 @@
                         <div v-if="event.exit" class="flex items-center">
                             <i class="fas fa-subway mr-2 text-stone-400"></i>
                             <span class="font-bold mr-2">{{ event.exit }}</span>
-                            <span v-if="event.lift" class="text-green-600 font-bold"><i class="fas fa-wheelchair mr-1"></i>免爬樓梯</span>
+                            <span v-if="event.lift" class="tag-lift"><i class="fas fa-wheelchair mr-1"></i>免爬樓梯 (電梯)</span>
                         </div>
                         <div v-if="event.compare" class="text-stone-400">
-                            <i class="fas fa-bolt mr-2"></i>地鐵比公車快 <b class="text-amber-600">{{ event.compare.diff }}</b> 分鐘
+                            <i class="fas fa-bolt mr-2"></i>地鐵約 {{ event.compare.subway }} (比公車快 {{ event.compare.diff }}m)
                         </div>
                     </div>
 
                     <div class="flex gap-2">
-                        <a :href="'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(event.title)" target="_blank" class="map-btn bg-blue-50 text-blue-600 border border-blue-100">
-                            <i class="fab fa-google mr-1"></i> Google Map
+                        <a :href="'https://www.google.com/maps/search/' + encodeURIComponent(event.title)" target="_blank" class="map-btn bg-blue-50 text-blue-600 border border-blue-100">
+                            <i class="fab fa-google mr-1"></i> Google
                         </a>
                         <a :href="'https://map.naver.com/v5/search/' + encodeURIComponent(event.title)" target="_blank" class="map-btn bg-stone-800 text-white">
                             <i class="fas fa-location-arrow mr-1"></i> Naver Map
@@ -77,19 +78,19 @@
 
             <div v-if="currentTab === 'budget'" class="space-y-6">
                 <div class="bg-stone-800 p-8 rounded-[32px] text-white shadow-xl">
-                    <p class="text-[10px] text-stone-400 tracking-widest uppercase font-bold mb-1">Total Expenses</p>
+                    <p class="text-[10px] text-stone-400 tracking-widest font-bold mb-1 uppercase">Total Spending</p>
                     <h3 class="text-4xl font-bold italic">₩ {{ totalKRW.toLocaleString() }}</h3>
                     <p class="mt-2 opacity-50 text-xs">約 NT$ {{ Math.round(totalKRW / 42).toLocaleString() }}</p>
                 </div>
                 <div class="flex justify-between items-center px-2">
                     <h4 class="font-bold">支出清單</h4>
-                    <button @click="addExpense" class="text-xs font-bold border-b-2 border-stone-800 pb-1">+ 新增紀錄</button>
+                    <button @click="addExpense" class="text-xs font-bold bg-amber-500 text-white px-4 py-2 rounded-xl">+ 新增紀錄</button>
                 </div>
                 <div class="space-y-3">
                     <div v-for="(ex, index) in expenses" :key="index" class="kr-card p-4 flex justify-between items-center">
                         <div>
                             <p class="text-sm font-bold">{{ ex.name }}</p>
-                            <p class="text-[9px] text-stone-400 uppercase tracking-tighter">{{ ex.date }}</p>
+                            <p class="text-[9px] text-stone-400">{{ ex.date }}</p>
                         </div>
                         <p class="font-bold text-stone-800">₩{{ ex.amount.toLocaleString() }}</p>
                     </div>
@@ -97,19 +98,19 @@
             </div>
         </main>
 
-        <nav class="nav-bar fixed bottom-6 left-6 right-6 p-4 shadow-2xl z-50">
+        <nav class="nav-bar fixed bottom-6 left-6 right-6 p-4 shadow-2xl z-50 border border-stone-200/50">
             <div class="grid grid-cols-3 text-center items-center">
-                <button @click="currentTab = 'itinerary'" :class="currentTab === 'itinerary' ? 'text-stone-800' : 'text-stone-300'">
-                    <i class="fas fa-map-marked-alt text-lg"></i>
-                    <span class="block text-[8px] mt-1 font-black uppercase">Schedule</span>
+                <button @click="currentTab = 'itinerary'" :class="currentTab === 'itinerary' ? 'text-stone-800 scale-110' : 'text-stone-300'" class="transition-all">
+                    <i class="fas fa-calendar-alt text-lg"></i>
+                    <span class="block text-[8px] mt-1 font-black">SCHEDULE</span>
                 </button>
-                <button @click="currentTab = 'budget'" :class="currentTab === 'budget' ? 'text-stone-800' : 'text-stone-300'">
+                <button @click="currentTab = 'budget'" :class="currentTab === 'budget' ? 'text-stone-800 scale-110' : 'text-stone-300'" class="transition-all">
                     <i class="fas fa-receipt text-lg"></i>
-                    <span class="block text-[8px] mt-1 font-black uppercase">Budget</span>
+                    <span class="block text-[8px] mt-1 font-black">BUDGET</span>
                 </button>
                 <button @click="selectedDayIdx = 4; currentTab = 'itinerary'" class="text-amber-600">
                     <i class="fas fa-shopping-cart text-lg"></i>
-                    <span class="block text-[8px] mt-1 font-black uppercase">Lotte Mart</span>
+                    <span class="block text-[8px] mt-1 font-black">LOTTE MART</span>
                 </button>
             </div>
         </nav>
@@ -121,7 +122,7 @@
             setup() {
                 const currentTab = ref('itinerary');
                 const selectedDayIdx = ref(0);
-                const expenses = ref(JSON.parse(localStorage.getItem('seoul_trip_fin') || '[]'));
+                const expenses = ref(JSON.parse(localStorage.getItem('seoul_v3_final') || '[]'));
                 const totalKRW = computed(() => expenses.value.reduce((sum, item) => sum + item.amount, 0));
                 
                 const addExpense = () => {
@@ -129,32 +130,35 @@
                     const amount = parseInt(prompt("金額 (KRW):") || "0");
                     if (name && amount) expenses.value.unshift({ name, amount, date: new Date().toLocaleDateString() });
                 };
-                watch(expenses, (v) => localStorage.setItem('seoul_trip_fin', JSON.stringify(v)), { deep: true });
+                watch(expenses, (v) => localStorage.setItem('seoul_v3_final', JSON.stringify(v)), { deep: true });
 
                 const itinerary = ref([
                     { shortDate: '15', events: [
-                        { time: '11:00', category: 'Arrival', title: '抵達仁川機場', desc: '航班 BR170。機接直達飯店。' },
-                        { time: '14:30', category: 'Money', title: '明洞換錢所', desc: '大使館或一品香換錢。' },
-                        { time: '16:00', category: 'Shop', title: '廣藏市場', desc: '推薦買棉被、吃綠豆粉煎餅。' },
-                        { time: '19:00', category: 'Night', title: '東大門 DDP', desc: '逛逛設計廣場與周邊商場。' }
+                        { time: '11:00', category: 'Arrival', title: '抵達仁川 (BR170)', desc: '機接直達蠶室飯店放行李。' },
+                        { time: '15:00', category: 'Money', title: '明洞換錢 (大使館/一品香)', exit: '乙支路入口站 6號', desc: '先換好現金才有力氣逛市場！' },
+                        { time: '16:30', category: 'Shop', title: '廣藏市場 (買棉被)', exit: '鐘路5街站 8號', desc: '找169號(JINU)或88號。買完記得請店家真空壓縮。' },
+                        { time: '19:00', category: 'Food', title: '聖水洞 + 晚餐', desc: '吃馬鈴薯排骨湯。' }
                     ]},
                     { shortDate: '16', events: [
-                        { time: '09:30', category: 'Uniform', title: '梨花制服', exit: '蠶室站 4號', lift: true, desc: '3、4號出口間有電梯。走連通道直達 Galleria Palace B1。', compare: { diff: 16 } },
-                        { time: '11:30', category: 'Play', title: '樂天樂園', exit: '蠶室站 4號', desc: '穿制服入園拍照！' },
-                        { time: '15:00', category: 'Cafe', title: '聖水洞 LowKey', desc: '特色工業風咖啡廳巡禮。' },
-                        { time: '18:00', category: 'Food', title: '六時里燒肉 (蠶室店)', desc: '享受美味熟成豬肉。' }
+                        { time: '08:30', category: 'Uniform', title: '梨花制服租借', exit: '蠶室站 4號', lift: true, desc: '3、4號出口間有電梯。走地下連通道直達 Galleria Palace B1。' },
+                        { time: '10:00', category: 'Play', title: '樂天樂園全日', exit: '蠶室站 4號', desc: '穿制服入園！' },
+                        { time: '18:00', category: 'Food', title: '六時里燒肉 (蠶室店)', desc: '住宿附近，肉質極佳不用跑遠。' },
+                        { time: '20:00', category: 'Night', title: '盤浦大橋噴泉+泡麵', exit: '高速巴士站 8-1號', desc: '漢江邊吹風吃泡麵。' }
                     ]},
                     { shortDate: '17', events: [
-                        { time: '10:00', category: 'Shop', title: '南大門市場', exit: '會賢站 6號', desc: '童裝採購聖地。' },
-                        { time: '14:00', category: 'Walk', title: '明洞商圈', desc: '繼續補貨化妝品與小吃。' }
+                        { time: '10:00', category: 'Shop', title: '南大門市場 (童裝)', exit: '會賢站 6號', desc: '必逛 PORKY、MAMA、Burdeng 三大棟。' },
+                        { time: '14:00', category: 'Star', title: '明洞購物 + 明星周邊', exit: '明洞站', desc: 'WITHMUU、Photoism 拍貼 (LE SSERAFIM)。' },
+                        { time: '17:30', category: 'Food', title: '藥水站 金豬食堂', exit: '藥水站 2號', desc: '或是去江南吃人生燒肉 (需預約)。' }
                     ]},
                     { shortDate: '18', events: [
-                        { time: '13:00', category: 'Art', title: '弘大似顏繪', exit: '弘大站 9號', desc: '像子漫畫工坊。' },
-                        { time: '16:00', category: 'Walk', title: '弘大延南洞', desc: '逛特色小店。' }
+                        { time: '10:30', category: 'Star', title: 'HYBE 總部打卡', exit: '新龍山站 2號', desc: '朝聖公司門口。' },
+                        { time: '13:00', category: 'Art', title: '弘大 (像子漫畫工坊)', exit: '弘大站 9號', desc: '繪製個人似顏繪。' },
+                        { time: '17:00', category: 'Shop', title: '聖水洞 (EPT/MLB)', exit: '聖水站 4號', desc: '補買鞋子與服飾。' },
+                        { time: '20:00', category: 'View', title: '駱山公園夜景', desc: '從東大門站搭公車或計程車上去。' }
                     ]},
                     { shortDate: '19', events: [
-                        { time: '09:00', category: 'Shop', title: '樂天超市 Lotte Mart', desc: '首爾站總店，採購最後的伴手禮、泡麵與海苔！' },
-                        { time: '11:00', category: 'Return', title: '前往機場 (BR153)', desc: '機接直達仁川機場 T2，準備回台。' }
+                        { time: '09:00', category: 'Shop', title: '樂天超市 Lotte Mart', desc: '首爾站總店，採購最後伴手禮與泡麵。' },
+                        { time: '11:30', category: 'Return', title: '前往機場 (BR153)', desc: '拿完行李後機接前往仁川機場 T2。' }
                     ]}
                 ]);
 
