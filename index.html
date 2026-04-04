@@ -1,7 +1,78 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seoul Trip 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #F8F5F2; color: #5D534A; }
+        .kr-card { background: white; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .tag-food { background: #FFE4E6; color: #BE123C; font-size: 10px; padding: 2px 8px; border-radius: 8px; }
+        .tag-buy { background: #FEF3C7; color: #92400E; font-size: 10px; padding: 2px 8px; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <div id="app" class="max-w-md mx-auto min-h-screen relative pb-24">
+        <header class="p-6 pt-10 text-center">
+            <h1 class="text-3xl font-bold">首爾行 🌸</h1>
+            <p class="text-stone-400 text-sm mt-1">2026.04.15 - 04.19</p>
+        </header>
 
-const firebaseConfig = { /* 貼上你的 Config */ };
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const expenseCol = collection(db, "expenses");
+        <div class="px-5 space-y-6">
+            <div v-for="(day, index) in itinerary" :key="index" class="space-y-4">
+                <div class="text-xs font-bold text-stone-400 border-b pb-1">Day {{ index + 1 }} · {{ day.date }}</div>
+                <div v-for="item in day.events" :key="item.time" class="kr-card p-4">
+                    <div class="flex justify-between text-[10px] text-stone-300 font-bold mb-1">
+                        <span>{{ item.category }}</span>
+                        <span>{{ item.time }}</span>
+                    </div>
+                    <h3 class="font-bold text-stone-800">{{ item.title }}</h3>
+                    <p class="text-xs text-stone-500 mt-1">{{ item.desc }}</p>
+                    <div class="flex gap-2 mt-3">
+                        <span v-for="tag in item.tags" :class="tag.type === 'food' ? 'tag-food' : 'tag-buy'">{{ tag.text }}</span>
+                    </div>
+                    <a :href="'https://map.naver.com/v5/search/' + encodeURIComponent(item.title)" target="_blank" class="block mt-4 bg-stone-800 text-white text-center py-2 rounded-xl text-xs font-bold">
+                        <i class="fas fa-location-arrow mr-1"></i> Naver Map 導航
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t flex justify-around p-4 z-50">
+            <i class="fas fa-map-signs text-xl text-stone-800"></i>
+            <i class="fas fa-wallet text-xl text-stone-300"></i>
+            <i class="fas fa-info-circle text-xl text-stone-300"></i>
+        </nav>
+    </div>
+
+    <script>
+        const { createApp, ref } = Vue;
+        createApp({
+            setup() {
+                const itinerary = ref([
+                    {
+                        date: '04/15',
+                        events: [
+                            { time: '15:00', title: '明洞換錢', category: 'SHOPPING', desc: '乙支路入口站6號出口', tags: [{type:'buy', text:'必備現鈔'}] },
+                            { time: '16:30', title: '廣藏市場', category: 'MARKET', desc: '169號店買棉被', tags: [{type:'buy', text:'真空包裝'}, {type:'food', text:'生拌牛肉'}] },
+                            { time: '22:30', title: 'SPAREX 汗蒸幕', category: 'RELAX', desc: '14號出口直達', tags: [{type:'food', text:'甜米釀'}] }
+                        ]
+                    },
+                    {
+                        date: '04/16',
+                        events: [
+                            { time: '10:00', title: '樂天樂園', category: 'PLAY', desc: '步行即可', tags: [{type:'buy', text:'髮箍'}] },
+                            { time: '17:30', title: '六時里燒肉', category: 'FOOD', desc: '蠶室店', tags: [{type:'food', text:'熟成五花肉'}] }
+                        ]
+                    }
+                ]);
+                return { itinerary };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
