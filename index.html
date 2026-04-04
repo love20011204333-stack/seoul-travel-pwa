@@ -2,144 +2,149 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>首爾櫻花行 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>首爾行 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&display=swap');
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #F8F5F2; color: #5D534A; -webkit-tap-highlight-color: transparent; }
-        .kr-card { background: white; border-radius: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid rgba(255,255,255,0.8); }
-        .tag-food { background: #FFE4E6; color: #BE123C; font-size: 10px; padding: 2px 8px; border-radius: 8px; font-weight: bold; }
-        .tag-buy { background: #FEF3C7; color: #92400E; font-size: 10px; padding: 2px 8px; border-radius: 8px; font-weight: bold; }
-        .nav-active { color: #5D534A; transform: scale(1.1); transition: all 0.2s; }
-        .nav-inactive { color: #D1D1D1; }
-        .safe-pb { padding-bottom: calc(env(safe-area-inset-bottom) + 5rem); }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&family=Gowun+Batang&display=swap');
+        :root { --kr-beige: #FDF7F2; --kr-brown: #5D534A; --kr-accent: #D97706; }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--kr-beige); color: var(--kr-brown); -webkit-tap-highlight-color: transparent; }
+        .font-kr-title { font-family: 'Gowun Batang', serif; font-weight: 700; }
+        .date-scroller { -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .date-scroller::-webkit-scrollbar { display: none; }
+        .date-btn { border-radius: 16px; transition: all 0.2s; min-width: 75px; }
+        .date-btn-active { background-color: var(--kr-brown); color: white; box-shadow: 0 4px 12px rgba(93, 83, 74, 0.3); }
+        .kr-card { background: white; border-radius: 28px; box-shadow: 0 4px 15px rgba(220, 200, 180, 0.15); border: 1px solid rgba(255,255,255,0.7); overflow: hidden; }
+        .nav-bar { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-top: 1px solid rgba(230, 220, 210, 0.5); border-radius: 30px 30px 0 0; }
+        .tag-transport { background: #E0F2FE; color: #0369A1; font-size: 10px; padding: 2px 8px; border-radius: 8px; font-weight: bold; }
+        .tag-lift { background: #F0FDF4; color: #15803D; font-size: 10px; padding: 2px 8px; border-radius: 8px; font-weight: bold; }
+        .safe-area-bottom { padding-bottom: calc(env(safe-area-inset-bottom) + 5.5rem); }
+        .animate-fadeIn { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
     <div id="app" class="max-w-md mx-auto min-h-screen relative">
         
-        <header class="p-8 pt-12">
-            <div class="flex justify-between items-end">
-                <div>
-                    <h1 class="text-3xl font-bold text-stone-800">首爾行 🌸</h1>
-                    <p class="text-stone-400 text-sm mt-1">2026.04.15 - 04.19</p>
-                </div>
-                <div class="text-right text-xs font-bold text-pink-400 italic">Spring Seoul</div>
+        <header class="sticky top-0 bg-[#FDF7F2]/95 backdrop-blur-sm z-50 border-b border-stone-100 pb-4">
+            <div class="px-6 py-5 flex justify-between items-center">
+                <h1 class="text-2xl font-kr-title text-stone-900">首爾櫻花行 🌸</h1>
+                <span class="text-[10px] bg-white px-2 py-1 rounded-full shadow-sm">BR170 ➔ BR153</span>
+            </div>
+            <div class="date-scroller flex space-x-3 overflow-x-auto px-6">
+                <button v-for="(day, index) in itinerary" :key="index" @click="selectedDayIdx = index; currentTab = 'itinerary'"
+                    class="date-btn flex-shrink-0 text-center px-4 py-3 border"
+                    :class="selectedDayIdx === index && currentTab === 'itinerary' ? 'date-btn-active' : 'bg-white text-stone-400 border-stone-100'">
+                    <span class="block text-[10px] font-bold">DAY {{ index + 1 }}</span>
+                    <span class="block text-xl font-bold">{{ day.shortDate }}</span>
+                </button>
             </div>
         </header>
 
-        <main v-if="currentTab === 'itinerary'" class="px-5 space-y-10 animate-fadeIn safe-pb">
-            <div v-for="(day, dIdx) in itinerary" :key="dIdx" class="space-y-4">
-                <div class="flex justify-between items-center px-2">
-                    <h2 class="text-lg font-bold text-stone-700">Day {{ dIdx + 1 }} <span class="text-sm font-normal text-stone-400 ml-2">{{ day.date }}</span></h2>
-                    <span class="text-[10px] bg-white px-2 py-1 rounded-full shadow-sm text-stone-400"><i class="fas fa-sun mr-1"></i> {{ day.temp }}</span>
-                </div>
-
-                <div class="space-y-4">
-                    <div v-for="item in day.events" :key="item.time" class="kr-card p-5">
+        <main class="animate-fadeIn safe-area-bottom px-5 mt-6">
+            
+            <div v-if="currentTab === 'itinerary'" class="space-y-6">
+                <div v-for="(event, eIdx) in currentDayData.events" :key="eIdx" class="kr-card">
+                    <img v-if="event.imageUrl" :src="event.imageUrl" class="w-full h-32 object-cover">
+                    <div class="p-5">
                         <div class="flex justify-between items-start mb-2">
-                            <span class="text-[10px] font-bold tracking-widest text-stone-300 uppercase">{{ item.category }}</span>
-                            <span class="text-xs font-mono text-stone-400">{{ item.time }}</span>
+                            <div class="flex gap-1">
+                                <span class="tag-transport">{{ event.category }}</span>
+                                <span v-if="event.lift" class="tag-lift"><i class="fas fa-wheelchair mr-1"></i>免爬樓梯</span>
+                            </div>
+                            <span class="text-xs font-mono text-stone-400">{{ event.time }}</span>
                         </div>
-                        <h3 class="text-lg font-bold text-stone-800">{{ item.title }}</h3>
-                        <p class="text-xs text-stone-500 mt-1 leading-relaxed">{{ item.desc }}</p>
-                        <div class="flex flex-wrap gap-2 mt-3">
-                            <span v-for="tag in item.tags" :class="tag.type === 'food' ? 'tag-food' : 'tag-buy'">{{ tag.text }}</span>
+                        <h3 class="text-lg font-bold text-stone-900">{{ event.title }}</h3>
+                        <p class="text-xs text-stone-500 mt-1 leading-relaxed whitespace-pre-line">{{ event.desc }}</p>
+                        
+                        <div v-if="event.compare" class="mt-4 bg-stone-50 rounded-xl p-3 text-[11px]">
+                            <div class="flex justify-between text-stone-400 font-bold mb-2 uppercase tracking-tighter">
+                                <span>交通工具</span><span>預估時間</span><span>差距</span>
+                            </div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span><i class="fas fa-subway mr-1"></i>地鐵</span>
+                                <span>{{ event.compare.subway }}</span>
+                                <span class="text-green-600 font-bold">快 {{ event.compare.diff }}m</span>
+                            </div>
+                            <div class="flex justify-between items-center opacity-60">
+                                <span><i class="fas fa-bus mr-1"></i>公車</span>
+                                <span>{{ event.compare.bus }}</span>
+                                <span>-</span>
+                            </div>
                         </div>
-                        <div class="mt-5 grid grid-cols-2 gap-2">
-                            <a :href="'https://map.naver.com/v5/search/' + encodeURIComponent(item.title)" target="_blank" class="bg-stone-800 text-white text-center py-2.5 rounded-xl text-[11px] font-bold">
-                                <i class="fas fa-location-arrow mr-1"></i> Naver Map
-                            </a>
-                            <a :href="'https://www.google.com/maps/search/' + encodeURIComponent(item.title)" target="_blank" class="bg-stone-100 text-stone-500 text-center py-2.5 rounded-xl text-[11px] font-bold">
-                                <i class="fab fa-google mr-1"></i> Google
-                            </a>
-                        </div>
+
+                        <a :href="'https://map.naver.com/v5/search/' + encodeURIComponent(event.title)" target="_blank" class="block mt-4 text-center bg-stone-800 text-white py-3 rounded-xl text-xs font-bold shadow-lg">
+                            <i class="fas fa-location-arrow mr-1"></i> Naver Map 導覽
+                        </a>
                     </div>
                 </div>
             </div>
-        </main>
 
-        <main v-if="currentTab === 'info'" class="px-6 space-y-6 animate-fadeIn safe-pb">
-            <div class="kr-card p-6 space-y-4">
-                <h3 class="font-bold text-stone-800 border-b pb-2"><i class="fas fa-plane mr-2 text-blue-400"></i>航班資訊</h3>
-                <div class="text-sm space-y-2">
-                    <p class="flex justify-between"><span>去程 04/15</span> <span class="font-bold">07:30 TPE ➔ ICN</span></p>
-                    <p class="flex justify-between text-stone-400 text-xs"><span>航班代號</span> <span>BR170 (範例)</span></p>
-                    <div class="border-t border-dashed my-2"></div>
-                    <p class="flex justify-between"><span>回程 04/19</span> <span class="font-bold">12:00 ICN ➔ TPE</span></p>
+            <div v-if="currentTab === 'map'" class="space-y-6">
+                <div class="kr-card p-6">
+                    <h3 class="font-bold text-stone-800 mb-4"><i class="fas fa-hotel mr-2 text-amber-500"></i>住宿與機接資訊</h3>
+                    <div class="bg-stone-50 p-4 rounded-2xl space-y-3 text-sm">
+                        <p><span class="text-stone-400">飯店地址：</span><br><span class="font-bold select-all">서울, 송파구 백제고분로11길 32-16</span></p>
+                        <p class="text-xs text-blue-600 font-bold"><i class="fas fa-shuttle-van mr-1"></i>訂房含機接：直達飯店門口</p>
+                    </div>
                 </div>
             </div>
 
-            <div class="kr-card p-6 space-y-4">
-                <h3 class="font-bold text-stone-800 border-b pb-2"><i class="fas fa-hotel mr-2 text-orange-400"></i>住宿地點</h3>
-                <p class="text-sm font-bold">蠶室站附近飯店</p>
-                <p class="text-xs text-stone-400 leading-relaxed">鄰近樂天世界與石村湖，賞櫻首選。買完東西記得先回來放喔！</p>
-            </div>
-
-            <div class="kr-card p-6 space-y-4">
-                <h3 class="font-bold text-red-600 border-b pb-2"><i class="fas fa-phone mr-2"></i>緊急電話</h3>
-                <div class="grid grid-cols-2 gap-4 text-center">
-                    <div class="bg-red-50 p-3 rounded-2xl"><p class="text-[10px] text-red-400">警察局</p> <p class="font-bold">112</p></div>
-                    <div class="bg-red-50 p-3 rounded-2xl"><p class="text-[10px] text-red-400">救護車</p> <p class="font-bold">119</p></div>
-                </div>
+            <div v-if="currentTab === 'budget'" class="space-y-6 text-center py-20 opacity-40">
+                <i class="fas fa-wallet text-5xl mb-4"></i>
+                <p>記帳功能建置中...</p>
             </div>
         </main>
 
-        <main v-if="currentTab === 'budget'" class="px-6 space-y-6 animate-fadeIn safe-pb text-center py-20">
-            <i class="fas fa-wallet text-5xl text-stone-200 mb-4"></i>
-            <h3 class="text-stone-400">記帳功能開發中...</h3>
-            <p class="text-xs text-stone-300">目前建議先使用手機備忘錄喔！</p>
-        </main>
-
-        <nav class="fixed bottom-6 left-5 right-5 h-16 bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 flex justify-around items-center px-4 z-50">
-            <button @click="currentTab = 'itinerary'" :class="currentTab === 'itinerary' ? 'nav-active' : 'nav-inactive'">
-                <div class="flex flex-col items-center"><i class="fas fa-map-signs text-xl"></i><span class="text-[9px] mt-1 font-bold">行程</span></div>
-            </button>
-            <button @click="currentTab = 'info'" :class="currentTab === 'info' ? 'nav-active' : 'nav-inactive'">
-                <div class="flex flex-col items-center"><i class="fas fa-info-circle text-xl"></i><span class="text-[9px] mt-1 font-bold">資訊</span></div>
-            </button>
-            <button @click="currentTab = 'budget'" :class="currentTab === 'budget' ? 'nav-active' : 'nav-inactive'">
-                <div class="flex flex-col items-center"><i class="fas fa-wallet text-xl"></i><span class="text-[9px] mt-1 font-bold">記帳</span></div>
-            </button>
+        <nav class="nav-bar fixed bottom-0 left-0 right-0 p-4 pb-8 z-50">
+            <div class="max-w-md mx-auto grid grid-cols-3 gap-1 text-center">
+                <button @click="currentTab = 'itinerary'" :class="currentTab === 'itinerary' ? 'text-amber-600' : 'text-stone-300'">
+                    <i class="fas fa-map-marked-alt text-xl"></i><span class="block text-[10px] mt-1 font-bold">行程規劃</span>
+                </button>
+                <button @click="currentTab = 'map'" :class="currentTab === 'map' ? 'text-amber-600' : 'text-stone-300'">
+                    <i class="fas fa-location-arrow text-xl"></i><span class="block text-[10px] mt-1 font-bold">交通地圖</span>
+                </button>
+                <button @click="currentTab = 'budget'" :class="currentTab === 'budget' ? 'text-amber-600' : 'text-stone-300'">
+                    <i class="fas fa-wallet text-xl"></i><span class="block text-[10px] mt-1 font-bold">旅遊記帳</span>
+                </button>
+            </div>
         </nav>
     </div>
 
     <script>
-        const { createApp, ref } = Vue;
+        const { createApp, ref, computed } = Vue;
         createApp({
             setup() {
                 const currentTab = ref('itinerary');
+                const selectedDayIdx = ref(1); // 預設顯示 Day 2
                 const itinerary = ref([
-                    { date: '04/15 Wed', temp: '18°C', events: [
-                        { time: '15:00', category: 'Shopping', title: '明洞換錢', desc: '🚇 2號線乙支路入口站6號出口。韓元現金首站，才有力氣掃貨！', tags: [{type:'buy', text:'必備現鈔'}] },
-                        { time: '16:30', title: '廣藏市場', category: 'Market', desc: '🚇 1號線鐘路5街站8號出口。找169號店買棉被，可真空壓縮。', tags: [{type:'buy', text:'169號棉被'}, {type:'food', text:'生拌牛肉'}] },
-                        { time: '18:00', title: 'Allycamera 相機店', category: 'Shopping', desc: '🚇 東大門歷史公園站5號出口。買底片機的好地方。', tags: [{type:'buy', text:'底片機'}] },
-                        { time: '22:30', title: 'SPAREX 汗蒸幕', category: 'Relax', desc: '14號出口商場地下3樓。洗澡搓澡吃雞蛋，完美結尾。', tags: [{type:'food', text:'甜米釀'}] }
+                    { shortDate: '15', events: [
+                        { time: '11:00', category: 'Arrival', title: '抵達仁川機場', desc: '航班 BR170。\n機接直達飯店：松坡區百濟古墳路11街 32-16。', imageUrl: 'https://images.unsplash.com/photo-1541876783903-319a283947e3?w=600' }
                     ]},
-                    { date: '04/16 Thu', temp: '19°C', events: [
-                        { time: '10:00', title: '樂天樂園', category: 'Play', desc: '就在飯店旁邊，賞櫻順便玩設施。', tags: [{type:'buy', text:'樂園髮箍'}] },
-                        { time: '17:30', title: '六時里燒肉 (蠶室店)', category: 'Food', desc: '不用跑遠，就在蠶室享受熟成豬五花。', tags: [{type:'food', text:'必點五花肉'}] },
-                        { time: '20:00', title: '盤浦大橋噴泉', category: 'View', desc: '搭配漢江泡麵，體驗最道地的首爾夜晚。', tags: [{type:'food', text:'漢江泡麵'}] }
+                    { shortDate: '16', events: [
+                        { 
+                            time: '09:30', category: 'Uniform', title: '梨花制服租借', lift: true,
+                            desc: '📍 蠶室站 4 號出口直走至 Galleria Palace B1。\n👣 免爬樓梯：利用 3、4 號出口間電梯，走地下連通道直達大樓 B1。',
+                            compare: { subway: '32m', bus: '48m', diff: '16' },
+                            imageUrl: 'https://images.unsplash.com/photo-1620216630043-398ac35791c5?w=600'
+                        },
+                        { 
+                            time: '11:00', category: 'Play', title: '樂天樂園賞櫻', lift: true,
+                            desc: '📍 就在梨花制服對面。\n👣 蠶室站 4 號出口設有電梯直達地面層，進園最輕鬆。',
+                            imageUrl: 'https://images.unsplash.com/photo-1622353000626-97645f78a05e?w=600'
+                        },
+                        { time: '18:00', category: 'Food', title: '六時里燒肉 (蠶室店)', desc: '走路即可抵達，享受熟成五花肉。' }
                     ]},
-                    { date: '04/17 Fri', temp: '20°C', events: [
-                        { time: '10:00', title: '南大門童裝', category: 'Shopping', desc: '🚇 4號線會賢站6號出口。準備好現金，早點去款式最齊。', tags: [{type:'buy', text:'現金準備'}] },
-                        { time: '13:00', title: '明洞商圈', category: 'Shopping', desc: '逛明星周邊、拍 LE SSERAFIM 韓式拍貼。', tags: [{type:'buy', text:'明星周邊'}] },
-                        { time: '18:00', title: '人生燒肉 (韓牛)', category: 'Food', desc: '🚇 新論峴站4號出口。韓牛天堂，建議提早預約。', tags: [{type:'food', text:'韓牛'}] }
-                    ]},
-                    { date: '04/18 Sat', temp: '17°C', events: [
-                        { time: '10:30', title: 'HYBE 總部打卡', category: 'K-POP', desc: '🚇 新龍山站2號出口。粉絲必朝聖。', tags: [{type:'buy', text:'打卡拍爆'}] },
-                        { time: '13:00', title: '弘大商圈', category: 'Trend', desc: '找「像子漫畫」畫似顏繪，逛潮流服飾。', tags: [{type:'buy', text:'似顏繪'}] },
-                        { time: '17:00', title: '聖水洞', category: 'Trend', desc: '買 EPT、MLB。現在最紅的潮流聚集地。', tags: [{type:'buy', text:'潮流必敗'}] }
-                    ]},
-                    { date: '04/19 Sun', temp: '18°C', events: [
-                        { time: '09:30', title: '首爾林公園', category: 'Relax', desc: '機場前最後散步，看櫻花雨的最佳地點。', tags: [{type:'buy', text:'最後櫻花'}] },
-                        { time: '11:00', title: '前往機場', category: 'Travel', desc: '帶著滿滿的戰利品回家！', tags: [] }
+                    { shortDate: '17', events: [{ time: '10:00', title: '南大門童裝', category: 'Shopping', desc: '會賢站 6 號出口。' }] },
+                    { shortDate: '18', events: [{ time: '13:00', title: '弘大似顏繪', category: 'Trend', desc: '像子漫畫。' }] },
+                    { shortDate: '19', events: [
+                        { time: '10:00', category: 'Return', title: '前往機場 (BR153)', desc: '機接直達仁川機場 T2。\n航班改為 BR153。', imageUrl: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600' }
                     ]}
                 ]);
-                return { currentTab, itinerary };
+                const currentDayData = computed(() => itinerary.value[selectedDayIdx.value]);
+                return { currentTab, selectedDayIdx, itinerary, currentDayData };
             }
         }).mount('#app');
     </script>
