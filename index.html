@@ -3,167 +3,244 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>Seoul 2026 🌸</title>
+    <title>Seoul Trip 2026 🌸</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        /* 質感字體導入 */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&family=Gowun+Batang&display=swap');
-        :root { --kr-beige: #F8F5F2; --kr-brown: #5D534A; --kr-soft: #EAE3DB; }
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--kr-beige); color: var(--kr-brown); }
-        .font-kr-title { font-family: 'Gowun Batang', serif; }
-        .kr-card { background: white; border-radius: 24px; box-shadow: 0 4px 20px rgba(93, 83, 74, 0.05); border: 1px solid rgba(255,255,255,0.8); }
-        .date-btn { min-width: 65px; border-radius: 12px; transition: all 0.3s; background: white; border: 1px solid var(--kr-soft); }
-        .date-btn-active { background: var(--kr-brown) !important; color: white !important; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(93, 83, 74, 0.2); }
-        .nav-bar { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border-radius: 32px 32px 0 0; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .map-btn { font-size: 10px; font-weight: bold; padding: 10px; border-radius: 12px; flex: 1; text-align: center; }
+        
+        :root {
+            --kr-beige: #FDF7F2; /* 奶茶底色 */
+            --kr-brown: #5D534A; /* 深棕文字 */
+            --kr-accent: #D97706; /* 琥珀橘點綴 */
+            --kr-map-blue: #0A66C2; /* Naver/Google Blue */
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--kr-beige);
+            color: var(--kr-brown);
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+        }
+
+        /* 韓風標題字體 */
+        .font-kr-title { font-family: 'Gowun Batang', serif; font-weight: 700; }
+
+        /* 頂部日期滑動模擬 (參考圖一) */
+        .date-scroller { -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .date-scroller::-webkit-scrollbar { display: none; }
+        .date-btn { border-radius: 16px; transition: all 0.2s; min-width: 75px; }
+        .date-btn-active { background-color: var(--kr-brown); color: white; box-shadow: 0 4px 12px rgba(93, 83, 74, 0.3); }
+
+        /* 質感卡片與圖片佔位符 */
+        .kr-card { background: white; border-radius: 28px; box-shadow: 0 4px 15px rgba(220, 200, 180, 0.15); border: 1px solid rgba(255,255,255,0.7); overflow: hidden; }
+        .img-box { background: #EEE3D9; height: 120px; border-radius: 20px 20px 0 0; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; }
+
+        /* 交通出口與電梯 (最愛重點) */
+        .tag-transport { background: #E0F2FE; color: #0369A1; font-size: 10px; padding: 2px 8px; border-radius: 8px; font-weight: bold; }
         .tag-lift { background: #F0FDF4; color: #15803D; font-size: 10px; padding: 2px 8px; border-radius: 8px; font-weight: bold; }
+        .transport-compare { font-size: 11px; background: #FAF7F4; border-radius: 12px; padding: 10px; }
+
+        /* 地圖導航按鈕 (雙地圖) */
+        .map-btn { font-size: 11px; font-weight: bold; padding: 10px; border-radius: 12px; flex: 1; text-align: center; }
+
+        /* 記帳頁面 (參考圖二) */
+        .budget-header { background: var(--kr-brown); color: white; border-radius: 24px; }
+        .budget-add-btn { background: var(--kr-accent); color: white; font-weight: bold; border-radius: 12px; }
+
+        /* 底部導航 */
+        .nav-bar { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-top: 1px solid rgba(230, 220, 210, 0.5); border-radius: 30px 30px 0 0; }
+        .nav-active { color: var(--kr-accent); transform: translateY(-3px); transition: all 0.2s; }
+        .nav-inactive { color: #D1D1D1; }
+
+        /* 手機安全區修復 */
+        .safe-area-bottom { padding-bottom: calc(env(safe-area-inset-bottom) + 5.5rem); }
+        .safe-area-top { padding-top: env(safe-area-inset-top); }
     </style>
 </head>
 <body>
-    <div id="app" class="max-w-md mx-auto min-h-screen pb-32">
+    <div id="app" class="max-w-md mx-auto min-h-screen relative overflow-x-hidden">
         
-        <header class="px-6 pt-10 pb-4 sticky top-0 bg-[#F8F5F2]/90 backdrop-blur-md z-40 border-b border-stone-100/50">
-            <div class="flex justify-between items-end mb-6">
+        <header class="safe-area-top sticky top-0 bg-[#FDF7F2]/95 backdrop-blur-sm z-50 border-b border-stone-100 pb-4">
+            <div class="px-6 py-5 flex justify-between items-end">
                 <div>
-                    <p class="text-[10px] font-bold tracking-widest opacity-50 uppercase italic">Spring Trip</p>
-                    <h1 class="text-2xl font-kr-title font-bold mt-1">首爾之旅 🇰🇷</h1>
+                    <span class="text-[10px] text-stone-300 font-bold tracking-widest">SEOUL 2026</span>
+                    <h1 class="text-2xl font-kr-title text-stone-900 mt-1">櫻花手帳行 🌸</h1>
                 </div>
-                <div class="text-right text-[9px] font-bold">BR170 ➔ BR153</div>
+                <div class="text-right text-[10px] bg-white px-2 py-1 rounded-full border border-stone-200 shadow-sm">
+                    BR170 ➔ BR153
+                </div>
             </div>
-            
-            <div class="flex space-x-3 overflow-x-auto no-scrollbar pb-2">
-                <button v-for="(day, index) in itinerary" :key="index" @click="selectedDayIdx = index"
-                    class="date-btn flex-shrink-0 py-3 text-center"
-                    :class="selectedDayIdx === index ? 'date-btn-active' : 'text-stone-400'">
-                    <span class="text-[9px] block font-bold uppercase">Day {{ index + 1 }}</span>
-                    <span class="text-xl font-bold block">{{ day.shortDate }}</span>
+
+            <div class="date-scroller flex space-x-3 overflow-x-auto px-6">
+                <button v-for="(day, index) in itinerary" :key="index" @click="selectedDayIdx = index; currentTab = 'itinerary'"
+                    class="date-btn flex-shrink-0 text-center px-4 py-3 border border-stone-100"
+                    :class="selectedDayIdx === index && currentTab === 'itinerary' ? 'date-btn-active' : 'bg-white text-stone-400'">
+                    <span class="block text-[10px] font-bold">DAY {{ index + 1 }}</span>
+                    <span class="block text-xl font-bold">{{ day.shortDate }}</span>
                 </button>
             </div>
         </header>
 
-        <main class="px-5 mt-6 space-y-6">
+        <main class="animate-fadeIn safe-area-bottom px-5 mt-6">
             
             <div v-if="currentTab === 'itinerary'" class="space-y-6">
-                <div v-for="(event, eIdx) in currentDayData.events" :key="eIdx" class="kr-card p-6">
-                    <div class="flex justify-between items-start mb-3">
-                        <span class="text-[10px] bg-stone-100 text-stone-500 px-2 py-1 rounded-md font-bold uppercase tracking-wider">{{ event.category }}</span>
-                        <span class="text-sm font-mono font-bold opacity-30">{{ event.time }}</span>
+                <div v-for="(event, eIdx) in currentDayData.events" :key="eIdx" class="kr-card overflow-hidden">
+                    <img v-if="event.imageUrl" :src="event.imageUrl" class="w-full h-32 object-cover">
+                    <div v-else class="img-box">
+                        <i :class="event.icon || 'fas fa-map-marked-alt'"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-stone-800 mb-2">{{ event.title }}</h3>
-                    <p class="text-xs leading-relaxed text-stone-500 whitespace-pre-line mb-4">{{ event.desc }}</p>
                     
-                    <div v-if="event.exit || event.compare" class="bg-stone-50 rounded-2xl p-4 mb-4 space-y-2 text-[11px]">
-                        <div v-if="event.exit" class="flex items-center">
-                            <i class="fas fa-subway mr-2 text-stone-400"></i>
-                            <span class="font-bold mr-2">{{ event.exit }}</span>
-                            <span v-if="event.lift" class="tag-lift"><i class="fas fa-wheelchair mr-1"></i>免爬樓梯 (電梯)</span>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[10px] bg-stone-100 text-stone-500 px-2 py-1 rounded-md font-bold uppercase tracking-wider">{{ event.category }}</span>
+                            <span class="text-xs font-mono text-stone-400">{{ event.time }}</span>
                         </div>
-                        <div v-if="event.compare" class="text-stone-400">
-                            <i class="fas fa-bolt mr-2"></i>地鐵約 {{ event.compare.subway }} (比公車快 {{ event.compare.diff }}m)
-                        </div>
-                    </div>
+                        <h3 class="text-xl font-bold text-stone-900">{{ event.title }}</h3>
+                        <p class="text-xs text-stone-500 mt-1 leading-relaxed whitespace-pre-line">{{ event.desc }}</p>
 
-                    <div class="flex gap-2">
-                        <a :href="'https://www.google.com/maps/search/' + encodeURIComponent(event.title)" target="_blank" class="map-btn bg-blue-50 text-blue-600 border border-blue-100">
-                            <i class="fab fa-google mr-1"></i> Google
-                        </a>
-                        <a :href="'https://map.naver.com/v5/search/' + encodeURIComponent(event.title)" target="_blank" class="map-btn bg-stone-800 text-white">
-                            <i class="fas fa-location-arrow mr-1"></i> Naver Map
-                        </a>
+                        <div v-if="event.foodTitle" class="mt-4 bg-amber-50 rounded-xl p-3 text-[11px] text-amber-700">
+                            <i class="fas fa-utensils mr-1.5"></i> <span class="font-bold">{{ event.foodTitle }}:</span> {{ event.foodDesc }}
+                        </div>
+
+                        <div v-if="event.exit || event.compare" class="mt-4 bg-stone-50 rounded-xl p-4 space-y-3">
+                            <div v-if="event.exit" class="flex items-center text-[11px]">
+                                <div class="w-7 h-7 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center mr-2.5 shadow-inner"><i class="fas fa-subway"></i></div>
+                                <div><span class="font-bold mr-2">{{ event.exit }}</span> <span v-if="event.lift" class="tag-lift"><i class="fas fa-wheelchair mr-1"></i>免爬樓梯攻略</span></div>
+                            </div>
+                            <div v-if="event.compare" class="transport-compare text-stone-600 flex justify-between items-center opacity-70 border-t pt-3">
+                                <span><i class="fas fa-traffic-light mr-1"></i>交通選擇比對</span>
+                                <span class="text-green-600 font-bold">地鐵快 {{ event.compare.diff }}m</span>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-2 mt-5">
+                            <a :href="'https://map.naver.com/v5/search/' + encodeURIComponent(event.title)" target="_blank" class="map-btn bg-stone-800 text-white shadow-md active:scale-95 transition">
+                                <i class="fas fa-location-arrow mr-1.5"></i> 開啟 Naver Map
+                            </a>
+                            <a :href="'https://www.google.com/maps/search/' + encodeURIComponent(event.title)" target="_blank" class="map-btn bg-blue-50 text-blue-600 border border-blue-100">
+                                <i class="fab fa-google mr-1.5"></i> 開啟 Google
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div v-if="currentTab === 'budget'" class="space-y-6">
-                <div class="bg-stone-800 p-8 rounded-[32px] text-white shadow-xl">
-                    <p class="text-[10px] text-stone-400 tracking-widest font-bold mb-1 uppercase">Total Spending</p>
-                    <h3 class="text-4xl font-bold italic">₩ {{ totalKRW.toLocaleString() }}</h3>
-                    <p class="mt-2 opacity-50 text-xs">約 NT$ {{ Math.round(totalKRW / 42).toLocaleString() }}</p>
-                </div>
-                <div class="flex justify-between items-center px-2">
-                    <h4 class="font-bold">支出清單</h4>
-                    <button @click="addExpense" class="text-xs font-bold bg-amber-500 text-white px-4 py-2 rounded-xl">+ 新增紀錄</button>
-                </div>
-                <div class="space-y-3">
-                    <div v-for="(ex, index) in expenses" :key="index" class="kr-card p-4 flex justify-between items-center">
-                        <div>
-                            <p class="text-sm font-bold">{{ ex.name }}</p>
-                            <p class="text-[9px] text-stone-400">{{ ex.date }}</p>
-                        </div>
-                        <p class="font-bold text-stone-800">₩{{ ex.amount.toLocaleString() }}</p>
+                <div class="budget-header p-6">
+                    <p class="text-[10px] text-stone-400 tracking-widest">總花費 (TWD模擬)</p>
+                    <div class="flex justify-between items-end mt-1">
+                        <h3 class="text-4xl font-bold font-kr-title">NT$ <span class="text-stone-100">{{ totalExpensesTWD.toLocaleString() }}</span></h3>
+                        <p class="text-xs text-stone-200">剩餘預算 $35,883</p>
                     </div>
+                    <div class="w-full h-1 bg-stone-700 rounded-full mt-4"><div class="w-[28%] h-1 bg-amber-400 rounded-full"></div></div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center px-1">
+                        <h4 class="font-bold text-stone-700">支出明細 (範例)</h4>
+                        <button @click="addExpense" class="budget-add-btn text-xs px-4 py-2">+ 新增支出</button>
+                    </div>
+                    <div class="space-y-3">
+                        <div v-for="ex in expenses" class="bg-white p-4 rounded-2xl flex justify-between items-center border border-stone-50 shadow-sm">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center text-amber-500"><i :class="ex.icon"></i></div>
+                                <div><p class="text-sm font-bold">{{ ex.name }}</p><p class="text-[10px] text-stone-400">{{ ex.date }} · {{ ex.method }}</p></div>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-bold text-stone-900">TWD {{ ex.twd }}</p>
+                                <p class="text-[10px] text-stone-400">(₩ {{ ex.krw }})</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-stone-300 text-center py-4">註：記帳儲存與 Firebase 開發中。</p>
                 </div>
             </div>
+
+            <div v-if="currentTab === 'map'" class="space-y-6">
+                <div class="kr-card p-5 space-y-4 text-center">
+                    <i class="fas fa-map-marked text-5xl text-stone-200 py-10"></i>
+                    <h3 class="font-bold text-stone-800">全區地圖導覽模擬</h3>
+                    <p class="text-xs text-stone-400 leading-relaxed">目前靜態部署，暫不顯示即時全地圖。<br>請利用行程卡片中的雙地圖按鈕導航個別地點。</p>
+                </div>
+            </div>
+
         </main>
 
-        <nav class="nav-bar fixed bottom-6 left-6 right-6 p-4 shadow-2xl z-50 border border-stone-200/50">
-            <div class="grid grid-cols-3 text-center items-center">
-                <button @click="currentTab = 'itinerary'" :class="currentTab === 'itinerary' ? 'text-stone-800 scale-110' : 'text-stone-300'" class="transition-all">
-                    <i class="fas fa-calendar-alt text-lg"></i>
-                    <span class="block text-[8px] mt-1 font-black">SCHEDULE</span>
+        <nav class="nav-bar fixed bottom-0 left-0 right-0 p-4 pb-8 z-50">
+            <div class="max-w-md mx-auto grid grid-cols-3 gap-1 text-center safe-area-bottom">
+                <button @click="currentTab = 'itinerary'" :class="currentTab === 'itinerary' ? 'nav-active' : 'nav-inactive'">
+                    <i class="fas fa-map-marked-alt text-xl"></i><span class="block text-[9px] mt-1 font-bold">行程規劃</span>
                 </button>
-                <button @click="currentTab = 'budget'" :class="currentTab === 'budget' ? 'text-stone-800 scale-110' : 'text-stone-300'" class="transition-all">
-                    <i class="fas fa-receipt text-lg"></i>
-                    <span class="block text-[8px] mt-1 font-black">BUDGET</span>
+                <button @click="currentTab = 'budget'" :class="currentTab === 'budget' ? 'nav-active' : 'nav-inactive'">
+                    <i class="fas fa-wallet text-xl"></i><span class="block text-[9px] mt-1 font-bold">旅遊記帳</span>
                 </button>
-                <button @click="selectedDayIdx = 4; currentTab = 'itinerary'" class="text-amber-600">
-                    <i class="fas fa-shopping-cart text-lg"></i>
-                    <span class="block text-[8px] mt-1 font-black">LOTTE MART</span>
+                <button @click="currentTab = 'map'" :class="currentTab === 'map' ? 'nav-active' : 'nav-inactive'">
+                    <i class="fas fa-location text-xl"></i><span class="block text-[9px] mt-1 font-bold">地圖交通</span>
                 </button>
             </div>
         </nav>
     </div>
 
     <script>
-        const { createApp, ref, computed, watch } = Vue;
+        const { createApp, ref, computed } = Vue;
         createApp({
             setup() {
                 const currentTab = ref('itinerary');
-                const selectedDayIdx = ref(0);
-                const expenses = ref(JSON.parse(localStorage.getItem('seoul_v3_final') || '[]'));
-                const totalKRW = computed(() => expenses.value.reduce((sum, item) => sum + item.amount, 0));
-                
-                const addExpense = () => {
-                    const name = prompt("支出項目:");
-                    const amount = parseInt(prompt("金額 (KRW):") || "0");
-                    if (name && amount) expenses.value.unshift({ name, amount, date: new Date().toLocaleDateString() });
-                };
-                watch(expenses, (v) => localStorage.setItem('seoul_v3_final', JSON.stringify(v)), { deep: true });
+                const selectedDayIdx = ref(1); // 預設顯示 Day 2 (制服/樂園)
 
+                // 行程資料 (補上你的航班與飯店資訊)
                 const itinerary = ref([
-                    { shortDate: '15', events: [
-                        { time: '11:00', category: 'Arrival', title: '抵達仁川 (BR170)', desc: '機接直達蠶室飯店放行李。' },
-                        { time: '15:00', category: 'Money', title: '明洞換錢 (大使館/一品香)', exit: '乙支路入口站 6號', desc: '先換好現金才有力氣逛市場！' },
-                        { time: '16:30', category: 'Shop', title: '廣藏市場 (買棉被)', exit: '鐘路5街站 8號', desc: '找169號(JINU)或88號。買完記得請店家真空壓縮。' },
-                        { time: '19:00', category: 'Food', title: '聖水洞 + 晚餐', desc: '吃馬鈴薯排骨湯。' }
+                    { shortDate: '15 Wed', events: [
+                        { time: '13:30 Wed', category: 'Hotel', title: '飯店放行李 (蠶室飯店)', icon: 'fas fa-suitcase-rolling', desc: '辦理寄放行李，休息一下準備換錢。' },
+                        { time: '15:00 Wed', category: 'Money', title: '明洞大使館換錢所', exit: '乙支路入口 6號出口', lift: true, icon: 'fas fa-exchange-alt', desc: '地鐵直達方便。換好現金後有力氣掃貨！', compare: { diff: '18m' } }
                     ]},
-                    { shortDate: '16', events: [
-                        { time: '08:30', category: 'Uniform', title: '梨花制服租借', exit: '蠶室站 4號', lift: true, desc: '3、4號出口間有電梯。走地下連通道直達 Galleria Palace B1。' },
-                        { time: '10:00', category: 'Play', title: '樂天樂園全日', exit: '蠶室站 4號', desc: '穿制服入園！' },
-                        { time: '18:00', category: 'Food', title: '六時里燒肉 (蠶室店)', desc: '住宿附近，肉質極佳不用跑遠。' },
-                        { time: '20:00', category: 'Night', title: '盤浦大橋噴泉+泡麵', exit: '高速巴士站 8-1號', desc: '漢江邊吹風吃泡麵。' }
+                    { shortDate: '16 Thu', events: [
+                        { 
+                            time: '09:30 Thu', category: 'Uniform', title: '梨花制服租借 (B1 36-27舖)', lift: true,
+                            desc: '📍 蠶室站 4 號出口直走至 Galleria Palace B1。\n建議利用 3、4 號出口間升降梯，走地下連通道直達 Galleria Palace B1，最輕鬆！',
+                            compare: { subway: '32m', bus: '48m', diff: '16' },
+                            // 圖片範例 (需更換為真實當地店家意境圖)
+                            imageUrl: 'https://images.unsplash.com/photo-1541876783903-319a283947e3?q=80&w=600'
+                        },
+                        { 
+                            time: '11:00 Thu', category: 'Play', title: '樂天樂園全日賞櫻', lift: true, exit: '蠶室站 4號出口',
+                            desc: '住飯店旁邊的好處。穿制服入園，這天建議看櫻花狀況。',
+                            imageUrl: 'https://images.unsplash.com/photo-1620216630043-398ac35791c5?q=80&w=600'
+                        },
+                        { 
+                            time: '18:00 Thu', category: 'Food', title: '六時里燒肉 (잠실육시리)', desc: '回家順路吃熟成豬五花。', icon: 'fas fa-fire',
+                            foodTitle: '必點品項', foodDesc: '熟成豬五花、辣醬拌麵'
+                        }
                     ]},
-                    { shortDate: '17', events: [
-                        { time: '10:00', category: 'Shop', title: '南大門市場 (童裝)', exit: '會賢站 6號', desc: '必逛 PORKY、MAMA、Burdeng 三大棟。' },
-                        { time: '14:00', category: 'Star', title: '明洞購物 + 明星周邊', exit: '明洞站', desc: 'WITHMUU、Photoism 拍貼 (LE SSERAFIM)。' },
-                        { time: '17:30', category: 'Food', title: '藥水站 金豬食堂', exit: '藥水站 2號', desc: '或是去江南吃人生燒肉 (需預約)。' }
-                    ]},
-                    { shortDate: '18', events: [
-                        { time: '10:30', category: 'Star', title: 'HYBE 總部打卡', exit: '新龍山站 2號', desc: '朝聖公司門口。' },
-                        { time: '13:00', category: 'Art', title: '弘大 (像子漫畫工坊)', exit: '弘大站 9號', desc: '繪製個人似顏繪。' },
-                        { time: '17:00', category: 'Shop', title: '聖水洞 (EPT/MLB)', exit: '聖水站 4號', desc: '補買鞋子與服飾。' },
-                        { time: '20:00', category: 'View', title: '駱山公園夜景', desc: '從東大門站搭公車或計程車上去。' }
-                    ]},
-                    { shortDate: '19', events: [
-                        { time: '09:00', category: 'Shop', title: '樂天超市 Lotte Mart', desc: '首爾站總店，採購最後伴手禮與泡麵。' },
-                        { time: '11:30', category: 'Return', title: '前往機場 (BR153)', desc: '拿完行李後機接前往仁川機場 T2。' }
+                    { shortDate: '17 Fri', events: [{ time: '10:00 Fri', category: 'Shop', title: '南大門童裝', exit: '會賢站 6號出口', desc: '地鐵快 20m 避開 bridge 塞車。' }] },
+                    { shortDate: '18 Sat', events: [{ time: '13:00 Sat', category: 'Trend', title: '弘大似顏繪', exit: '弘大站 9號出口', desc: '地鐵直達最快。' }] },
+                    { shortDate: '19 Sun', events: [
+                        { time: '09:00 Sun', category: 'Shop', title: '樂天超市首爾站 (最後採買)', icon: 'fas fa-shopping-cart', desc: '带着行李逛！' },
+                        { time: '12:00 Sun', category: 'Return', title: '前往機場 (BR153中午返航)', icon: 'fas fa-plane-departure', desc: '機接直達，航班修正為 BR153。' }
                     ]}
                 ]);
 
+                // 記帳模擬資料 (參考圖二，含幣值模擬)
+                const expenses = ref([
+                    { icon: 'fas fa-tshirt', name: '明洞灰長袖上衣', date: '03-24', method: '信用卡', twd: '648', krw: '27,000' },
+                    { icon: 'fas fa-shopping-bag', name: '包 (未退稅範例)', date: '03-24', method: '信用卡', twd: '11,582', krw: '482,600' },
+                    { icon: 'fas fa-map-marker-alt', name: '氣候卡 (模擬)', date: '03-24', method: '信用卡', twd: '494', krw: '20,600' }
+                ]);
+
+                // 計算當前顯示日期資料
                 const currentDayData = computed(() => itinerary.value[selectedDayIdx.value]);
-                return { currentTab, selectedDayIdx, itinerary, currentDayData, expenses, addExpense, totalKRW };
+                // 計算總花費 (TWD模擬)
+                const totalExpensesTWD = computed(() => expenses.value.reduce((sum, item) => sum + parseInt(item.twd), 0));
+
+                const addExpense = () => {
+                    alert('此為靜態部署模擬，不支援真實新增功能。請於 TWD 幣值設定後開始記帳。');
+                };
+
+                return { currentTab, selectedDayIdx, itinerary, currentDayData, expenses, addExpense, totalExpensesTWD };
             }
         }).mount('#app');
     </script>
