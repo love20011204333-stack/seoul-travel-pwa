@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>Seoul 2026 櫻花手帳</title>
+    <title>Seoul 2026 | 櫻花手帳</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -14,140 +14,154 @@
         body { font-family: 'Noto Serif TC', serif; background-color: var(--bg); color: var(--text); -webkit-tap-highlight-color: transparent; }
         .font-title { font-family: 'Gowun Batang', serif; }
         
-        .date-btn { min-width: 70px; border-radius: 18px; transition: 0.3s; background: white; border: 1px solid #EFE9E2; }
-        .date-btn.active { background: #4A443F; color: white; border-color: #4A443F; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        
-        .event-card { background: var(--card); border-radius: 24px; box-shadow: 0 4px 20px rgba(180,160,140,0.1); overflow: hidden; margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.8); }
-        .event-img { width: 100%; height: 160px; object-cover: cover; background: #EFE9E2; display: flex; align-items: center; justify-content: center; }
-        
-        .tag-lift { background: #F0FDF4; color: #166534; font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: bold; }
-        .btn-map { flex: 1; padding: 12px; border-radius: 14px; font-size: 12px; font-weight: bold; text-align: center; transition: 0.2s; }
-        .btn-naver { background: #03C75A; color: white; }
-        .btn-google { background: #F1F1F1; color: #444; border: 1px solid #DDD; }
-        
-        .nav-bar { background: rgba(255,255,255,0.9); backdrop-filter: blur(15px); border-top: 1px solid #EFE9E2; height: 85px; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: #AAA; }
-        .nav-item.active { color: #4A443F; }
+        /* 質感卡片 */
+        .event-card { background: white; border-radius: 32px; overflow: hidden; margin-bottom: 24px; border: 1px solid rgba(239, 233, 226, 0.5); box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .img-container { width: 100%; height: 200px; position: relative; overflow: hidden; background: #EFE9E2; }
+        .img-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+        .event-card:active img { transform: scale(1.05); }
 
-        input, select { background: #F9F6F2; border: 1px solid #EFE9E2; border-radius: 10px; padding: 8px; width: 100%; margin-top: 5px; }
+        /* 標籤 */
+        .tag-time { position: absolute; top: 16px; left: 16px; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: bold; color: #4A443F; }
+        .tag-lift { background: #F0FDF4; color: #166534; font-size: 10px; padding: 2px 8px; border-radius: 8px; font-weight: bold; }
+        
+        /* 導航欄 */
+        .nav-bar { background: rgba(255,255,255,0.8); backdrop-filter: blur(20px); border-top: 1px solid #EFE9E2; height: 85px; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #D1D1D1; font-size: 10px; transition: 0.3s; }
+        .nav-item.active { color: #4A443F; transform: translateY(-2px); }
+
+        /* 記帳樣式 */
+        .budget-header { background: #4A443F; color: #F9F6F2; border-radius: 32px; padding: 32px; margin-bottom: 24px; }
+        .input-box { background: white; border: 1px solid #EFE9E2; border-radius: 16px; padding: 12px; width: 100%; font-size: 14px; margin-bottom: 12px; }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .animate-up { animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
-    <div id="app" class="max-w-md mx-auto min-h-screen pb-24">
-        <header class="px-6 pt-10 pb-4 sticky top-0 bg-[#F9F6F2]/90 backdrop-blur-md z-50">
-            <div class="flex justify-between items-end mb-5">
+    <div id="app" class="max-w-md mx-auto min-h-screen pb-28">
+        
+        <header class="px-6 pt-12 pb-6 sticky top-0 bg-[#F9F6F2]/90 backdrop-blur-md z-50">
+            <div class="flex justify-between items-end mb-6">
                 <div>
-                    <h1 class="text-2xl font-title font-bold">韓國🇰🇷</h1>
-                    <p class="text-[10px] tracking-widest opacity-50 uppercase">Seoul 2026 / BR170-BR153</p>
+                    <h1 class="text-2xl font-title font-bold">首爾行 🌸</h1>
+                    <p class="text-[9px] tracking-[0.3em] opacity-40 uppercase">Seoul 2026 / 4.15 - 4.19</p>
                 </div>
                 <div class="text-right">
-                    <span class="text-xs font-bold bg-white px-3 py-1 rounded-full shadow-sm border border-stone-100">KRW 1,000 ≈ NT$ 24.5</span>
+                    <p class="text-[10px] font-bold text-stone-400 mb-1">今日預報</p>
+                    <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-full border border-stone-100 shadow-sm">
+                        <i class="fas fa-sun text-amber-400 text-xs"></i>
+                        <span class="text-xs font-bold">{{itinerary[currentDay].temp}}° / {{itinerary[currentDay].rain}}%</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="flex space-x-3 overflow-x-auto no-scrollbar pb-2">
+            <div class="flex space-x-3 overflow-x-auto no-scrollbar">
                 <button v-for="(day, index) in itinerary" :key="index" 
                     @click="currentDay = index; tab = 'itinerary'"
-                    class="date-btn flex-shrink-0 py-3" :class="{active: currentDay === index && tab === 'itinerary'}">
-                    <span class="block text-[10px] opacity-60">DAY {{index+1}}</span>
-                    <span class="block text-lg font-bold">{{day.date}}</span>
+                    class="flex-shrink-0 w-16 py-4 rounded-2xl border transition-all duration-300"
+                    :class="currentDay === index && tab === 'itinerary' ? 'bg-[#4A443F] text-white border-[#4A443F] shadow-lg' : 'bg-white text-stone-300 border-stone-100'">
+                    <span class="block text-[9px] font-bold opacity-50 mb-1 tracking-tighter">DAY {{index+1}}</span>
+                    <span class="block text-lg font-bold font-title">{{day.dateNum}}</span>
                 </button>
             </div>
         </header>
 
         <main class="px-5">
             <div v-if="tab === 'itinerary'" class="space-y-6">
-                <div class="bg-blue-50/50 p-4 rounded-3xl flex items-center justify-between border border-blue-100/50">
-                    <div class="flex items-center gap-3">
-                        <i class="fas fa-cloud-sun text-blue-400 text-xl"></i>
-                        <div>
-                            <p class="text-xs font-bold text-blue-800">{{itinerary[currentDay].weather}}</p>
-                            <p class="text-[10px] text-blue-600">降雨機率: {{itinerary[currentDay].rain}}%</p>
-                        </div>
-                    </div>
-                    <p class="text-lg font-bold text-blue-800">{{itinerary[currentDay].temp}}°C</p>
-                </div>
-
-                <div v-for="(item, idx) in itinerary[currentDay].events" :key="idx" class="event-card animate-fadeIn">
-                    <div class="event-img">
-                        <img v-if="item.img" :src="item.img" class="w-full h-full object-cover">
-                        <i v-else class="fas fa-camera text-stone-200 text-3xl"></i>
+                <div v-for="(item, idx) in itinerary[currentDay].events" :key="idx" class="event-card animate-up">
+                    <div class="img-container">
+                        <div class="tag-time">{{item.time}}</div>
+                        <img :src="item.img" :alt="item.title">
                     </div>
                     <div class="p-6">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-[10px] font-bold text-stone-400 uppercase tracking-widest">{{item.time}} 抵達預計</span>
-                            <span v-if="item.type" class="bg-stone-100 text-[9px] px-2 py-0.5 rounded text-stone-500 font-bold uppercase">{{item.type}}</span>
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-lg font-bold tracking-tight">{{item.title}}</h3>
+                            <span class="text-[9px] bg-stone-100 px-2 py-0.5 rounded text-stone-400 font-bold uppercase">{{item.cat}}</span>
                         </div>
-                        <h3 class="text-xl font-bold mb-3 tracking-tight">{{item.title}}</h3>
-                        <p class="text-xs text-stone-500 leading-relaxed mb-4">{{item.desc}}</p>
+                        <p class="text-xs text-stone-400 leading-relaxed mb-5">{{item.desc}}</p>
 
-                        <div v-if="item.food" class="bg-amber-50 p-3 rounded-xl mb-4 border border-amber-100">
-                            <p class="text-[11px] text-amber-800 font-bold"><i class="fas fa-utensils mr-2"></i>必吃推薦：{{item.food}}</p>
+                        <div v-if="item.food" class="mb-5 bg-amber-50/50 p-3 rounded-xl border border-amber-100/50">
+                            <p class="text-[11px] text-amber-800 font-medium">
+                                <i class="fas fa-utensils mr-2"></i>必點：{{item.food}}
+                            </p>
                         </div>
 
-                        <div v-if="item.transport" class="bg-stone-50 p-4 rounded-2xl space-y-3 mb-5">
-                            <div class="flex items-center justify-between">
-                                <span class="text-[11px] font-bold"><i class="fas fa-subway mr-2 text-stone-400"></i>{{item.transport.station}}</span>
-                                <span v-if="item.transport.lift" class="tag-lift"><i class="fas fa-wheelchair mr-1"></i>有電梯出口</span>
+                        <div v-if="item.trans" class="bg-stone-50 p-4 rounded-2xl mb-5">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-[11px] font-bold"><i class="fas fa-subway mr-2 text-stone-300"></i>{{item.trans.station}}</span>
+                                <span v-if="item.trans.lift" class="tag-lift"><i class="fas fa-wheelchair mr-1"></i>電梯出口</span>
                             </div>
-                            <div class="flex justify-between text-[10px] border-t border-stone-200 pt-2 opacity-60">
-                                <span>地鐵: {{item.transport.subwayTime}}m</span>
-                                <span>公車: {{item.transport.busTime}}m</span>
-                                <span class="text-green-600 font-bold">推薦地鐵 (快 {{item.transport.busTime - item.transport.subwayTime}}m)</span>
+                            <div class="flex justify-between items-center text-[10px] text-stone-400 border-t border-stone-200/60 pt-3">
+                                <span>地鐵約 {{item.trans.sub}}m</span>
+                                <div class="w-1 h-1 bg-stone-200 rounded-full"></div>
+                                <span>公車約 {{item.trans.bus}}m</span>
+                                <span class="text-green-600 font-bold ml-auto">推薦地鐵</span>
                             </div>
                         </div>
 
                         <div class="flex gap-2">
-                            <a :href="item.naver" target="_blank" class="btn-map btn-naver"><i class="fas fa-location-arrow mr-2"></i>Naver Map</a>
-                            <a :href="item.google" target="_blank" class="btn-map btn-google"><i class="fab fa-google mr-2"></i>Google</a>
+                            <a :href="item.naver" target="_blank" class="flex-1 py-3.5 rounded-xl bg-[#03C75A] text-white text-[11px] font-bold text-center shadow-sm active:opacity-80">Naver Map</a>
+                            <a :href="item.google" target="_blank" class="flex-1 py-3.5 rounded-xl bg-white border border-stone-200 text-stone-600 text-[11px] font-bold text-center active:bg-stone-50">Google Map</a>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div v-if="tab === 'wallet'" class="animate-fadeIn">
-                <div class="bg-[#4A443F] text-white p-8 rounded-[32px] shadow-xl mb-8">
-                    <p class="text-xs opacity-60 tracking-widest mb-1 uppercase">Total Expenses (TWD)</p>
-                    <h2 class="text-4xl font-bold font-title mb-4">NT$ {{totalTWD}}</h2>
-                    <div class="flex justify-between text-[11px] opacity-80 border-t border-white/10 pt-4">
-                        <span>預算: NT$ 50,000</span>
-                        <span>剩餘: NT$ {{50000 - totalTWD}}</span>
+            <div v-if="tab === 'wallet'" class="animate-up">
+                <div class="budget-header shadow-xl">
+                    <p class="text-[10px] opacity-50 tracking-[0.2em] mb-2 uppercase">Total Expenses</p>
+                    <h2 class="text-4xl font-bold font-title mb-6">NT$ {{totalTWD.toLocaleString()}}</h2>
+                    <div class="flex justify-between text-[10px] opacity-40 mb-2">
+                        <span>預算 NT$ 50,000</span>
+                        <span>{{(totalTWD/50000*100).toFixed(1)}}%</span>
+                    </div>
+                    <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                        <div class="h-full bg-[#C8A68E] transition-all duration-500" :style="{width: (totalTWD/50000*100) + '%'}"></div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-[28px] p-6 shadow-sm border border-stone-100 mb-6">
-                    <h4 class="font-bold mb-4 text-sm">新增支出項目</h4>
-                    <div class="space-y-4">
-                        <input v-model="newExp.name" placeholder="項目名稱 (例如: 棉被)">
-                        <div class="grid grid-cols-2 gap-3">
-                            <input v-model.number="newExp.krw" type="number" placeholder="金額 (KRW)">
-                            <div class="flex items-center text-xs font-bold text-stone-400">≈ NT$ {{ (newExp.krw * 0.0245).toFixed(0) }}</div>
-                        </div>
-                        <button @click="saveExp" class="w-full bg-[#4A443F] text-white py-3 rounded-xl font-bold text-sm shadow-lg active:scale-95 transition">紀錄支出</button>
+                <div class="bg-white rounded-[28px] p-6 border border-stone-100 mb-6 shadow-sm">
+                    <h4 class="text-[10px] font-bold text-stone-300 uppercase mb-4 tracking-widest">Add New Record</h4>
+                    <input v-model="newExp.name" class="input-box" placeholder="支出項目 (如：聖水洞衣服)">
+                    <div class="relative mb-4">
+                        <input v-model.number="newExp.krw" type="number" class="input-box mb-0" placeholder="金額 (KRW)">
+                        <span class="absolute right-4 top-3.5 text-[10px] font-bold text-stone-300">₩</span>
                     </div>
+                    <p class="text-center text-[10px] text-stone-400 mb-4">預估換算：NT$ {{ (newExp.krw * 0.0245).toFixed(0) }}</p>
+                    <button @click="addExpense" class="w-full bg-[#4A443F] text-white py-4 rounded-2xl font-bold text-sm active:scale-95 transition-transform shadow-lg">確認紀錄</button>
                 </div>
 
                 <div class="space-y-3">
-                    <div v-for="(exp, i) in expenses" :key="i" class="bg-white p-4 rounded-2xl flex justify-between items-center shadow-sm border border-stone-50">
-                        <div>
-                            <p class="text-sm font-bold">{{exp.name}}</p>
-                            <p class="text-[10px] text-stone-400 uppercase tracking-tighter">{{exp.date}}</p>
+                    <div v-for="(ex, i) in expenses" :key="i" class="bg-white p-5 rounded-2xl flex justify-between items-center border border-stone-50 shadow-sm">
+                        <div class="flex items-center gap-4">
+                            <button @click="removeExp(i)" class="text-stone-200 hover:text-red-400"><i class="fas fa-times-circle"></i></button>
+                            <div>
+                                <p class="text-sm font-bold text-stone-700">{{ex.name}}</p>
+                                <p class="text-[9px] text-stone-300 uppercase tracking-tighter">{{ex.date}}</p>
+                            </div>
                         </div>
                         <div class="text-right">
-                            <p class="text-sm font-bold text-stone-800">NT$ {{ (exp.krw * 0.0245).toFixed(0) }}</p>
-                            <p class="text-[10px] text-stone-400">₩ {{exp.krw.toLocaleString()}}</p>
+                            <p class="text-sm font-bold text-stone-900">NT$ {{(ex.krw * 0.0245).toFixed(0)}}</p>
+                            <p class="text-[9px] text-stone-300">₩ {{ex.krw.toLocaleString()}}</p>
                         </div>
+                    </div>
+                    <div v-if="expenses.length === 0" class="text-center py-16 opacity-10">
+                        <i class="fas fa-receipt text-5xl mb-4"></i>
+                        <p class="text-sm font-bold uppercase tracking-widest">No Records Yet</p>
                     </div>
                 </div>
             </div>
         </main>
 
-        <nav class="nav-bar fixed bottom-0 left-0 right-0 px-8 flex z-50">
+        <nav class="nav-bar fixed bottom-0 left-0 right-0 px-12 flex items-center z-50">
             <button @click="tab = 'itinerary'" class="nav-item" :class="{active: tab === 'itinerary'}">
-                <i class="fas fa-calendar-alt text-xl mb-1"></i>行程規劃
+                <i class="fas fa-map-marked-alt text-xl mb-1.5"></i>
+                <span class="font-bold">行程</span>
             </button>
             <button @click="tab = 'wallet'" class="nav-item" :class="{active: tab === 'wallet'}">
-                <i class="fas fa-wallet text-xl mb-1"></i>旅遊記帳
+                <i class="fas fa-wallet text-xl mb-1.5"></i>
+                <span class="font-bold">記帳</span>
             </button>
         </nav>
     </div>
@@ -162,59 +176,66 @@
                 const newExp = ref({ name: '', krw: null });
 
                 const itinerary = ref([
-                    { date: '15 Wed', weather: '晴時多雲', rain: 10, temp: 18, events: [
-                        { time: '11:00', type: 'Arrival', title: '抵達仁川機場 (BR170)', desc: '入境領取行李，預約機接前往飯店。', img: 'https://images.unsplash.com/photo-1570646233903-875f56a68393?auto=format&fit=crop&q=80&w=400', transport: { station: '機場接送直達', subwayTime: 65, busTime: 90, lift: true }, naver: 'https://naver.me/仁川機場', google: 'https://maps.app.goo.gl/IncheonAirport' },
-                        { time: '13:30', type: 'Hotel', title: '飯店寄放行李', desc: '抵達蠶室站周邊飯店辦理寄放。', transport: { station: '蠶室站 (Jamsil)', subwayTime: 5, busTime: 10, lift: true }, naver: 'https://naver.me/Jamsil', google: 'https://maps.app.goo.gl/Jamsil' },
-                        { time: '15:00', type: 'Money', title: '明洞換錢所', desc: '大使館/一品香換錢，匯率最優。', transport: { station: '乙支路入口 6號出口', subwayTime: 35, busTime: 55, lift: true }, naver: 'https://naver.me/明洞換錢', google: 'https://maps.app.goo.gl/Myeongdong' },
-                        { time: '16:30', type: 'Shopping', title: '廣藏市場 (買棉被)', desc: '找169號或88號，買完請店家真空壓縮。', food: '綠豆煎餅、麻藥飯捲', transport: { station: '鐘路5街 8號出口', subwayTime: 15, busTime: 25, lift: false }, naver: 'https://naver.me/廣藏市場', google: 'https://maps.app.goo.gl/Gwangjang' },
-                        { time: '18:30', type: 'Shopping', title: '聖水洞逛街', desc: '逛 EPT、MLB、Dior 旗艦店。', transport: { station: '聖水站 4號出口', subwayTime: 20, busTime: 35, lift: true }, naver: 'https://naver.me/聖水洞', google: 'https://maps.app.goo.gl/Seongsu' },
-                        { time: '20:00', type: 'Dinner', title: '馬鈴薯排骨湯', desc: '聖水洞名店，濃郁湯頭必排。', food: '祖傳三代馬鈴薯排骨湯', transport: { station: '步行即可', subwayTime: 5, busTime: 5, lift: true }, naver: 'https://naver.me/排骨湯', google: 'https://maps.app.goo.gl/Soup' }
+                    { dateNum: '15', temp: 18, rain: 10, events: [
+                        { time: '11:00', cat: 'Flight', title: '抵達仁川 T2 (BR170)', desc: '領完行李預約接送直達飯店。', img: 'https://images.unsplash.com/photo-1542296332-2b4473faf563?q=80&w=800', trans: { station: '機場大廳', lift: true, sub: 60, bus: 85 }, naver: 'https://naver.me/仁川', google: 'https://maps.app.goo.gl/Incheon' },
+                        { time: '13:30', cat: 'Hotel', title: '蠶室飯店放行李', desc: '先寄放行李，稍微休息。', img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800', trans: { station: '蠶室站 (Jamsil)', lift: true, sub: 5, bus: 10 }, naver: 'https://naver.me/Jamsil', google: 'https://maps.app.goo.gl/Jamsil' },
+                        { time: '15:00', cat: 'Money', title: '明洞換錢所', desc: '大使館/一品香換匯，匯率最佳。', img: 'https://images.unsplash.com/photo-1580519546948-d2cd6e996b7c?q=80&w=800', trans: { station: '乙支路入口 6號出口', lift: true, sub: 35, bus: 50 }, naver: 'https://naver.me/Myeongdong', google: 'https://maps.app.goo.gl/Myeongdong' },
+                        { time: '16:30', cat: 'Shop', title: '廣藏市場買棉被', desc: '找169號或88號，買完真空壓縮。', food: '綠豆煎餅、生牛肉', img: 'https://images.unsplash.com/photo-1590301157890-4810ed352733?q=80&w=800', trans: { station: '鐘路5街 8號出口', lift: false, sub: 15, bus: 25 }, naver: 'https://naver.me/Gwangjang', google: 'https://maps.app.goo.gl/Gwangjang' },
+                        { time: '18:30', cat: 'Shop', title: '聖水洞逛街', desc: '逛 EPT、Dior 旗艦店。', img: 'https://images.unsplash.com/photo-1583252594468-f85052c073ef?q=80&w=800', trans: { station: '聖水站 4號出口', lift: true, sub: 25, bus: 40 }, naver: 'https://naver.me/Seongsu', google: 'https://maps.app.goo.gl/Seongsu' },
+                        { time: '20:00', cat: 'Food', title: '祖傳三代馬鈴薯湯', desc: '聖水洞必排隊的名店。', food: '馬鈴薯排骨湯', img: 'https://images.unsplash.com/photo-1514516348920-f3199999517a?q=80&w=800', naver: 'https://naver.me/PorkSoup', google: 'https://maps.app.goo.gl/PorkSoup' }
                     ]},
-                    { date: '16 Thu', weather: '晴朗', rain: 0, temp: 20, events: [
-                        { time: '09:30', type: 'Uniform', title: '梨花制服租借', desc: '蠶室站 4 號出口地下連通道直達。', transport: { station: 'Galleria Palace B1', subwayTime: 10, busTime: 15, lift: true }, naver: 'https://naver.me/Ehwa', google: 'https://maps.app.goo.gl/Ehwa' },
-                        { time: '11:00', type: 'Play', title: '樂天樂園全日', desc: '櫻花下的冒險，穿制服玩樂。', transport: { station: '蠶室站 4號出口', subwayTime: 5, busTime: 10, lift: true }, naver: 'https://naver.me/Lotte', google: 'https://maps.app.goo.gl/Lotte' },
-                        { time: '17:30', type: 'Uniform', title: '歸還制服', desc: '回到店內歸還。', transport: { station: '步行', subwayTime: 5, busTime: 5, lift: true }, naver: 'https://naver.me/Ehwa', google: 'https://maps.app.goo.gl/Ehwa' },
-                        { time: '18:30', type: 'Dinner', title: '六時里燒肉', desc: '高級熟成豬肉，蠶室店必吃。', food: '熟成五花肉、石鍋飯', transport: { station: '蠶室站', subwayTime: 5, busTime: 10, lift: true }, naver: 'https://naver.me/BBQ', google: 'https://maps.app.goo.gl/BBQ' },
-                        { time: '20:30', type: 'Night', title: '汝矣島漢江泡麵', desc: '在櫻花下體驗漢江泡麵機。', food: '自動煮麵機泡麵、炸雞', transport: { station: '汝矣渡口站 2號出口', subwayTime: 40, busTime: 60, lift: true }, naver: 'https://naver.me/HanRiver', google: 'https://maps.app.goo.gl/HanRiver' }
+                    { dateNum: '16', temp: 20, rain: 0, events: [
+                        { time: '09:30', cat: 'Uniform', title: '梨花制服租借', desc: '地下連通道直達，免爬樓梯。', img: 'https://images.unsplash.com/photo-1523450001312-faa4e2e37f0f?q=80&w=800', trans: { station: '蠶室站 4號出口電梯', lift: true, sub: 10, bus: 15 }, naver: 'https://naver.me/Ehwa', google: 'https://maps.app.goo.gl/Ehwa' },
+                        { time: '11:00', cat: 'Play', title: '樂天樂園賞櫻', desc: '全日穿制服拍照玩樂。', img: 'https://images.unsplash.com/photo-1513106580091-1d82408b8cd6?q=80&w=800', trans: { station: '蠶室站', lift: true, sub: 5, bus: 10 }, naver: 'https://naver.me/LotteWorld', google: 'https://maps.app.goo.gl/LotteWorld' },
+                        { time: '17:30', cat: 'Service', title: '歸還制服', desc: '回到店鋪歸還。', img: 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=800', naver: 'https://naver.me/Ehwa', google: 'https://maps.app.goo.gl/Ehwa' },
+                        { time: '18:30', cat: 'Food', title: '六時里燒肉', desc: '蠶室店熟成五花肉。', food: '熟成豬五花', img: 'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=800', naver: 'https://naver.me/BBQ', google: 'https://maps.app.goo.gl/BBQ' },
+                        { time: '20:30', cat: 'Night', title: '汝矣島漢江泡麵', desc: '櫻花下吃泡麵，最有儀式感。', food: '超商泡麵、起司、炸雞', img: 'https://images.unsplash.com/photo-1612600772251-b962d2993888?q=80&w=800', trans: { station: '汝矣渡口站 2號出口', lift: true, sub: 45, bus: 65 }, naver: 'https://naver.me/HanRiver', google: 'https://maps.app.goo.gl/HanRiver' }
                     ]},
-                    { date: '17 Fri', weather: '多雲', rain: 20, temp: 17, events: [
-                        { time: '10:00', type: 'Shopping', title: '南大門市場', desc: '童裝區大採購 (PORKY/MAMA)。', food: '蔬菜糖餅、帶魚街', transport: { station: '會賢站 6號出口', subwayTime: 30, busTime: 50, lift: true }, naver: 'https://naver.me/Namdae', google: 'https://maps.app.goo.gl/Namdae' },
-                        { time: '14:00', type: 'Shopping', title: '明洞 Olive Young', desc: '美妝補貨旗艦店。', transport: { station: '明洞站', subwayTime: 10, busTime: 15, lift: true }, naver: 'https://naver.me/OY', google: 'https://maps.app.goo.gl/OY' },
-                        { time: '15:30', type: 'Shopping', title: '明星周邊與專輯', desc: 'WITHMUU / Music Korea。', transport: { station: '明洞站', subwayTime: 5, busTime: 5, lift: true }, naver: 'https://naver.me/Music', google: 'https://maps.app.goo.gl/Music' },
-                        { time: '16:30', type: 'Trend', title: 'K-Pop 拍貼', desc: 'Photoism 限定框。', transport: { station: '明洞', subwayTime: 5, busTime: 5, lift: true }, naver: 'https://naver.me/Photo', google: 'https://maps.app.goo.gl/Photo' },
-                        { time: '18:00', type: 'Dinner', title: '金豬食堂', desc: '米其林推薦烤肉。', food: '帶骨五花肉', transport: { station: '藥水站 2號出口', subwayTime: 20, busTime: 35, lift: true }, naver: 'https://naver.me/GoldPig', google: 'https://maps.app.goo.gl/GoldPig' }
+                    { dateNum: '17', temp: 17, rain: 20, events: [
+                        { time: '10:00', cat: 'Shop', title: '南大門市場', desc: '童裝區大採買。', food: '蔬菜糖餅', img: 'https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?q=80&w=800', trans: { station: '會賢站 6號出口', lift: true, sub: 30, bus: 50 }, naver: 'https://naver.me/Namdaemun', google: 'https://maps.app.goo.gl/Namdaemun' },
+                        { time: '14:00', cat: 'Shop', title: '明洞 Olive Young', desc: '美妝保養品旗艦店補貨。', img: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=800', trans: { station: '明洞站', lift: true, sub: 10, bus: 15 }, naver: 'https://naver.me/OY', google: 'https://maps.app.goo.gl/OY' },
+                        { time: '15:30', cat: 'Star', title: '明星周邊/專輯', desc: 'WITHMUU / Music Korea。', img: 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=800', naver: 'https://naver.me/Music', google: 'https://maps.app.goo.gl/Music' },
+                        { time: '16:30', cat: 'Trend', title: 'Photoism 拍貼', desc: 'LE SSERAFIM 限定框。', img: 'https://images.unsplash.com/photo-1527529482837-4698179dc6ce?q=80&w=800', naver: 'https://naver.me/Photo', google: 'https://maps.app.goo.gl/Photo' },
+                        { time: '18:00', cat: 'Food', title: '金豬食堂燒肉', desc: '米其林推薦的名店。', food: '帶骨五花肉', img: 'https://images.unsplash.com/photo-1529692236671-61f932c0a25b?q=80&w=800', trans: { station: '藥水站 2號出口', lift: true, sub: 15, bus: 30 }, naver: 'https://naver.me/GoldPig', google: 'https://maps.app.goo.gl/GoldPig' }
                     ]},
-                    { date: '18 Sat', weather: '晴', rain: 0, temp: 21, events: [
-                        { time: '10:30', type: 'Trend', title: 'HYBE 總部打卡', desc: '龍山區朝聖地。', transport: { station: '新龍山站 2號出口', subwayTime: 35, busTime: 55, lift: true }, naver: 'https://naver.me/HYBE', google: 'https://maps.app.goo.gl/HYBE' },
-                        { time: '13:00', type: 'Art', title: '弘大似顏繪', desc: '像子漫畫工坊。', transport: { station: '弘大入口站 9號出口', subwayTime: 25, busTime: 45, lift: true }, naver: 'https://naver.me/Art', google: 'https://maps.app.goo.gl/Art' },
-                        { time: '17:00', type: 'Shopping', title: '聖水洞補貨', desc: '二次採買漏掉的精品。', transport: { station: '聖水站 4號出口', subwayTime: 45, busTime: 65, lift: true }, naver: 'https://naver.me/Seongsu', google: 'https://maps.app.goo.gl/Seongsu' },
-                        { time: '20:00', type: 'Night', title: '駱山公園夜景', desc: '城牆配夜景，浪漫最高。', transport: { station: '建議搭計程車', subwayTime: 40, busTime: 40, lift: false }, naver: 'https://naver.me/Naksan', google: 'https://maps.app.goo.gl/Naksan' }
+                    { dateNum: '18', temp: 21, rain: 0, events: [
+                        { time: '10:30', cat: 'Star', title: 'HYBE 總部打卡', desc: '龍山區朝聖。', img: 'https://images.unsplash.com/photo-1564910443496-5fd2d068dd02?q=80&w=800', trans: { station: '新龍山站 2號', lift: true, sub: 40, bus: 60 }, naver: 'https://naver.me/HYBE', google: 'https://maps.app.goo.gl/HYBE' },
+                        { time: '13:00', cat: 'Art', title: '弘大似顏繪', desc: '像子漫畫工坊。', img: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=800', trans: { station: '弘大入口站 9號', lift: true, sub: 30, bus: 45 }, naver: 'https://naver.me/Art', google: 'https://maps.app.goo.gl/Art' },
+                        { time: '17:00', cat: 'Shop', title: '聖水洞二次補貨', desc: '第一天沒買到的再來。', img: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=800', naver: 'https://naver.me/Seongsu', google: 'https://maps.app.goo.gl/Seongsu' },
+                        { time: '20:00', cat: 'Night', title: '駱山公園夜景', desc: '建議搭計程車上山。', img: 'https://images.unsplash.com/photo-1496568816379-896fb9b4b393?q=80&w=800', naver: 'https://naver.me/Naksan', google: 'https://maps.app.goo.gl/Naksan' }
                     ]},
-                    { date: '19 Sun', weather: '晴轉陰', rain: 30, temp: 19, events: [
-                        { time: '09:00', type: 'Shopping', title: '樂天超市首爾站', desc: '最後衝刺伴手禮。', food: '各式試吃泡麵', transport: { station: '首爾站 1號出口', subwayTime: 25, busTime: 40, lift: true }, naver: 'https://naver.me/LotteMart', google: 'https://maps.app.goo.gl/LotteMart' },
-                        { time: '12:00', type: 'Departure', title: '前往機場 (BR153)', desc: '直達 T2 入境大廳。', transport: { station: '首爾站直達 AREX', subwayTime: 51, busTime: 80, lift: true }, naver: 'https://naver.me/Airport', google: 'https://maps.app.goo.gl/Airport' }
+                    { dateNum: '19', temp: 19, rain: 30, events: [
+                        { time: '09:00', cat: 'Shop', title: '樂天超市首爾站', desc: '行李箱直接寄放逛街。', food: '各式海苔、伴手禮', img: 'https://images.unsplash.com/photo-1534723452862-4c874018d66d?q=80&w=800', trans: { station: '首爾站 1號出口', lift: true, sub: 30, bus: 45 }, naver: 'https://naver.me/LotteMart', google: 'https://maps.app.goo.gl/LotteMart' },
+                        { time: '12:00', cat: 'Return', title: '前往機場 (BR153)', desc: '直達 T2 報到。', img: 'https://images.unsplash.com/photo-1436491865332-7a61a109c0f3?q=80&w=800', trans: { station: 'AREX 直達車', lift: true, sub: 51, bus: 80 }, naver: 'https://naver.me/Airport', google: 'https://maps.app.goo.gl/Airport' }
                     ]}
                 ]);
 
-                const saveExp = () => {
+                const addExpense = () => {
                     if (!newExp.value.name || !newExp.value.krw) return;
                     expenses.value.unshift({
-                        ...newExp.value,
-                        date: new Date().toLocaleDateString(),
-                        twd: (newExp.value.krw * 0.0245).toFixed(0)
+                        name: newExp.value.name,
+                        krw: newExp.value.krw,
+                        date: new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' })
                     });
-                    localStorage.setItem('seoul_expenses_final', JSON.stringify(expenses.value));
+                    localStorage.setItem('seoul_2026_wallet', JSON.stringify(expenses.value));
                     newExp.value = { name: '', krw: null };
                 };
 
-                const totalTWD = computed(() => expenses.value.reduce((s, e) => s + parseInt(e.twd), 0));
+                const removeExp = (i) => {
+                    if (confirm('確定要刪除這筆支出紀錄嗎？')) {
+                        expenses.value.splice(i, 1);
+                        localStorage.setItem('seoul_2026_wallet', JSON.stringify(expenses.value));
+                    }
+                };
+
+                const totalTWD = computed(() => expenses.value.reduce((s, e) => s + (e.krw * 0.0245), 0));
 
                 onMounted(() => {
-                    const saved = localStorage.getItem('seoul_expenses_final');
+                    const saved = localStorage.getItem('seoul_2026_wallet');
                     if (saved) expenses.value = JSON.parse(saved);
                 });
 
-                return { tab, currentDay, itinerary, expenses, newExp, saveExp, totalTWD };
+                return { tab, currentDay, itinerary, expenses, newExp, addExpense, removeExp, totalTWD };
             }
         }).mount('#app');
     </script>
